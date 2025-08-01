@@ -1,5 +1,8 @@
 package com.moshecode.todo1.Service;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class TodoServiceImpl implements ToDo {
 
     public String getToDoList() {
