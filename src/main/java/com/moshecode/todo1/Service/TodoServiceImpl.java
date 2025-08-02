@@ -1,23 +1,49 @@
 package com.moshecode.todo1.Service;
 
-import org.springframework.stereotype.Component;
+import com.moshecode.todo1.data.ToDo;
+import com.moshecode.todo1.data.ToDoRepository;
+import com.moshecode.todo1.data.User;
+import com.moshecode.todo1.data.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
-@Component
+@Service
 public class TodoServiceImpl implements ToDoService {
+    private final ToDoRepository toDoRepository;
+    private final UserRepository userRepository;
 
-    public String getToDoList() {
-        // This method should return the to-do list data
-        // For now, returning a placeholder string
-        return "To-Do List Placeholder";
+    @Autowired
+    public TodoServiceImpl(ToDoRepository toDoRepository, UserRepository userRepository) {
+        this.toDoRepository = toDoRepository;
+        this.userRepository = userRepository;
     }
-    public void addToDoItem(String item) {
-        // This method should add an item to the to-do list
-        // For now, just printing the item
-        System.out.println("Adding item: " + item);
+
+    @Override
+    public List<ToDo> getTodosForUser(String username) {
+        return toDoRepository.findByOwnerUsername(username);
     }
-    public void removeToDoItem(String item) {
-        // This method should remove an item from the to-do list
-        // For now, just printing the item
-        System.out.println("Removing item: " + item);
+
+    public ToDo addToDoItem(String username, ToDo todo) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        todo.setOwner(user);
+        return toDoRepository.save(todo);
+    }
+
+
+    @Override
+    public ToDo markAsCompleted(String username, Long id) {
+        ToDo todo = toDoRepository.findById(id).orElse(null);
+        if (todo != null) {
+            todo.setCompleted(true);
+            return toDoRepository.save(todo);
+        }
+        return null;
+    }
+
+    @Override
+    public void removeToDoItem(String username, Long id) {
+        toDoRepository.deleteById(id);
     }
 }

@@ -1,7 +1,18 @@
 package com.moshecode.todo1.data;
 
-public class DBToDO {
-    //write to my sqlite database
-    // This class will handle database operations for ToDo items
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+public class DBToDO {
+    private final ToDoRepository toDoRepository;
+
+    @Autowired
+    public DBToDO(ToDoRepository toDoRepository) {
+        this.toDoRepository = toDoRepository;
+    }
+
+    public ToDo saveOrUpdate(ToDo todo) {
+        return toDoRepository.save(todo);
+    }
 }
