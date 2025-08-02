@@ -3,7 +3,9 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+# ignreo eveything in data folder
+data/*
+/data/*.mv.db
 ### STS ###
 .apt_generated
 .classpath

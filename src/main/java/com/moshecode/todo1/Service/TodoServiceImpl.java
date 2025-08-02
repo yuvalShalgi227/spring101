@@ -6,6 +6,8 @@ import com.moshecode.todo1.data.User;
 import com.moshecode.todo1.data.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,15 +23,29 @@ public class TodoServiceImpl implements ToDoService {
 
     @Override
     public List<ToDo> getTodosForUser(String username) {
-        return toDoRepository.findByOwnerUsername(username);
+        return userRepository.findByUsername(username)
+                .map(User::getTodos)
+                .orElse(new ArrayList<>());
     }
 
     public ToDo addToDoItem(String username, ToDo todo) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        todo.setOwner(user);
-        return toDoRepository.save(todo);
+
+        // Attach the new Todo to the user's list
+        List<ToDo> todos = user.getTodos();
+        if (todos == null) {
+            todos = new ArrayList<>();
+            user.setTodos(todos);
+        }
+        todos.add(todo);
+
+        // Save the user, which cascades and saves the new Todo
+        userRepository.save(user);
+
+        return todo;
     }
+
 
 
     @Override

@@ -13,7 +13,8 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @OneToMany(mappedBy = "owner")
+    @JoinColumn(name = "user_id")  //
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ToDo> todos;
 
     public Long getId() {
