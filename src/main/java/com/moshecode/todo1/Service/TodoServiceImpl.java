@@ -3,7 +3,7 @@ package com.moshecode.todo1.Service;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TodoServiceImpl implements ToDo {
+public class TodoServiceImpl implements ToDoService {
 
     public String getToDoList() {
         // This method should return the to-do list data
